@@ -4,6 +4,8 @@ ENV HADOOP_VERSION=3.2.1
 ENV HADOOP_HOME=/opt/hadoop
 ENV PATH=/opt/conda/bin:$PATH
 ENV SPARK_DIST_CLASSPATH="/opt/hadoop/etc/hadoop:/opt/hadoop/share/hadoop/common/lib/*:/opt/hadoop/share/hadoop/common/*:/opt/hadoop/share/hadoop/hdfs:/opt/hadoop/share/hadoop/hdfs/lib/*:/opt/hadoop/share/hadoop/hdfs/*:/opt/hadoop/share/hadoop/mapreduce/lib/*:/opt/hadoop/share/hadoop/mapreduce/*:/opt/hadoop/share/hadoop/yarn:/opt/hadoop/share/hadoop/yarn/lib/*:/opt/hadoop/share/hadoop/yarn/*"
+ENV JUPYTER_CONFIG_DIR=/tmp/.jupyter
+ENV JUPYTER_RUNTIME_DIR=/tmp/jupyter_runtime
 
 # Install wget and bzip2 for Miniconda
 USER root
@@ -14,6 +16,8 @@ RUN install_packages apt-utils wget bzip2 curl && \
     /opt/conda/bin/conda init bash && \
     /opt/conda/bin/conda create -y -n pyspark38 python=3.8 && \
     /opt/conda/bin/conda run -n pyspark38 pip install pyspark==3.4.2 kafka-python && \
+    /opt/conda/bin/conda run -n pyspark38 pip install notebook ipykernel && \
+    /opt/conda/bin/conda run -n pyspark38 python -m ipykernel install --user --name pyspark38 --display-name "Python 3.8 (PySpark)" && \
     curl -fL -o hadoop-${HADOOP_VERSION}.tar.gz https://archive.apache.org/dist/hadoop/common/hadoop-${HADOOP_VERSION}/hadoop-${HADOOP_VERSION}.tar.gz && \
     tar -xzf hadoop-${HADOOP_VERSION}.tar.gz -C /opt && \
     mv /opt/hadoop-${HADOOP_VERSION} $HADOOP_HOME && \
@@ -21,10 +25,15 @@ RUN install_packages apt-utils wget bzip2 curl && \
     chown -R 1001:0 /opt/conda && \
     chown -R 1001:0 /opt/hadoop
 
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
 # Optionally, set bash as the default shell for interactive use
 SHELL ["/bin/bash", "-c"]
 
 USER 1001
+
+CMD ["/entrypoint.sh"]
 
 # Instructions:
 # To use the container as a development environment, run:

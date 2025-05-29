@@ -61,6 +61,7 @@ services:
     ports:
       - "7077:7077"
       - "8080:8080"
+      - "8888:8888"
     depends_on:
       - kafka
       - hadoop-namenode
