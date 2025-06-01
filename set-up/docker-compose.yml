@@ -86,6 +86,25 @@ services:
     networks:
       - bigdata
 
+  zeppelin:
+    image: apache/zeppelin:0.12.0
+    container_name: zeppelin
+    environment:
+      - ZEPPELIN_PORT=8081
+      - SPARK_HOME=/opt/spark
+      - MASTER=spark://spark-master:7077
+      - SPARK_MASTER=spark://spark-master:7077
+    ports:
+      - "8081:8081"
+    depends_on:
+      - spark-master
+    volumes:
+      - ../spark/binary/spark-3.4.2-bin-hadoop3:/opt/spark
+      - ../spark/conf/core-site.xml:/opt/spark/conf/core-site.xml
+      - ../code:/code
+    networks:
+      - bigdata
+
 networks:
   bigdata:
     driver: bridge
