@@ -40,13 +40,22 @@ set-up/
    ```
    - The code directory is mounted at `/code` inside the container.
    - The Python 3.8 environment with `pyspark==3.4.2` and `kafka-python` is available.
+   - **Navigate to your code directory inside the container:**
+     ```bash
+     cd /code
+     ```
 
 5. **Activate the Python environment (inside the container):**
    ```bash
    conda activate pyspark38
    ```
 
-6. **Run your Python or Spark jobs as needed.**
+6. **Install additional Python packages with pip (inside the container and environment):**
+   ```bash
+   pip install <package-name>
+   ```
+
+7. **Run your Python or Spark jobs as needed.**
 
 ## How to connect from Spark master container to Hadoop Namenode
 
