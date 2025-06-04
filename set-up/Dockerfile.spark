@@ -31,8 +31,6 @@ RUN chmod +x /entrypoint.sh
 # Optionally, set bash as the default shell for interactive use
 SHELL ["/bin/bash", "-c"]
 
-USER 1001
-
 CMD ["/entrypoint.sh"]
 
 # Instructions:
